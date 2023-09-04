@@ -1,5 +1,20 @@
 FROM ubuntu:22.04
-RUN apt update && apt install software-properties-common apt-transport-https -y && add-apt-repository ppa:ondrej/php -y && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata && apt install apache2 rsyslog net-tools curl imagemagick make p7zip rsync s3cmd telnet zip php7.2 php7.2-bcmath php7.2-bz2 php7.2-cli php7.2-common php7.2-curl php7.2-dev php7.2-enchant php7.2-gd php7.2-imap php7.2-imagick php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mcrypt php7.2-mysql php7.2-opcache php7.2-pspell php7.2-readline php7.2-soap php7.2-sqlite3 php7.2-tidy php7.2-xml php7.2-xmlrpc php7.2-xsl php7.2-zip -y
-RUN sed -i 's/#cron/cron/g' /etc/rsyslog.d/50-default.conf && sed  '/^\[provider_sect\]/a legacy = legacy_sect' -i /etc/ssl/openssl.cnf && sed  '/\[default_sect\]/a activate = 1' -i /etc/ssl/openssl.cnf && echo "" >> /etc/ssl/openssl.cnf && echo "[legacy_sect]" >> /etc/ssl/openssl.cnf && echo "activate = 1" >> /etc/ssl/openssl.cnf
+
+#install necessary packages
+RUN apt update && \
+apt install software-properties-common apt-transport-https -y && \
+add-apt-repository ppa:ondrej/php -y && \
+DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata && \
+apt install apache2 rsyslog net-tools curl imagemagick make p7zip rsync s3cmd telnet zip php7.2 php7.2-bcmath php7.2-bz2 php7.2-cli php7.2-common php7.2-curl php7.2-dev php7.2-enchant php7.2-gd php7.2-imap php7.2-imagick php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mcrypt php7.2-mysql php7.2-opcache php7.2-pspell php7.2-readline php7.2-soap php7.2-sqlite3 php7.2-tidy php7.2-xml php7.2-xmlrpc php7.2-xsl php7.2-zip -y
+
+#edit various configuration files
+RUN sed -i 's/#cron/cron/g' /etc/rsyslog.d/50-default.conf && \
+sed  '/^\[provider_sect\]/a legacy = legacy_sect' -i /etc/ssl/openssl.cnf && \
+sed  '/\[default_sect\]/a activate = 1' -i /etc/ssl/openssl.cnf && \
+echo "" >> /etc/ssl/openssl.cnf && \
+echo "[legacy_sect]" >> /etc/ssl/openssl.cnf && echo "activate = 1" >> /etc/ssl/openssl.cnf
+
+#adding apache2 configuration
 COPY ./etc/30-vtiger.ini /etc/php/7.2/apache2/conf.d/
+
 CMD apachectl -D FOREGROUND
