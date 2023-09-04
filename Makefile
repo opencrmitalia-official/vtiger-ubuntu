@@ -2,6 +2,8 @@
 
 
 #container os
+build-os:
+	@docker build ./os -t os:22.04 
 create-os:
 	@cd os && docker compose up -d
 	@echo 'link to apache2 sample page: http://127.0.0.1:8080'
