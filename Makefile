@@ -20,3 +20,23 @@ version-os:
 	@cd os && docker compose exec os bash -c "lsb_release -a && echo '' && php -v"
 info-os:
 	@cd os && docker compose exec os bash -c "php -i"
+
+#container crm
+build-crm: build-os
+	@docker build --progress=plain --no-cache ./crm -t crm:7.1
+create-crm: build-crm
+	@cd crm && docker compose up -d
+	@echo 'link to apache2 sample page: http://127.0.0.1:8081'
+start-crm:
+	@cd crm && docker compose start
+stop-crm:
+	@cd crm && docker compose stop
+rm-crm:
+	@cd crm && docker compose down
+test-crm: stop-crm rm-crm
+	@echo "START TESTING"
+	@docker build --progress=plain ./crm -t crm:7.1
+	@echo "step 1"
+	@cd crm && docker compose up -d
+	@echo "step 2"
+	@cd crm && docker compose logs -f crm

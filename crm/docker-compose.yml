@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  crm:
+    image: crm:7.1
+    ports:
+      - 8081:80
+      - 8444:443
